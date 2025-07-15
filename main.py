@@ -4,6 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy import text
 from sqlalchemy.orm import Session as sesh
 from sqlalchemy.orm import sessionmaker as seshfac
+
+from db import create_database
+
 engine = create_engine("sqlite:///students.db", echo=True)
 
 app = FastAPI()
@@ -14,8 +17,9 @@ app = FastAPI()
 #     conn.execute(text("CREATE TABLE IF NOT EXISTS student(id INTEGER PRIMARY KEY AUTOINCREMENT, age INTEGER NOT NULL, gpa FLOAT NOT NULL)"))
 #     conn.commit()
 
-stmt = text("CREATE TABLE IF NOT EXISTS student(id INTEGER PRIMARY KEY AUTOINCREMENT, age INTEGER NOT NULL, gpa FLOAT NOT NULL)")
+# stmt = text("CREATE TABLE IF NOT EXISTS student(id INTEGER PRIMARY KEY AUTOINCREMENT, age INTEGER NOT NULL, gpa FLOAT NOT NULL)")
 
+create_database()
 
 # using the factory method vs the Session method 
 
@@ -37,11 +41,11 @@ stmt = text("CREATE TABLE IF NOT EXISTS student(id INTEGER PRIMARY KEY AUTOINCRE
 # short form of the above also making use of the sessionmaker
 # factory method
 
-Session = seshfac(engine)
+# Session = seshfac(engine)
 
-with Session.begin() as session:
-    session.execute(stmt)
-# comits the transaction and closes the session
+# with Session.begin() as session:
+#     session.execute(stmt)
+# # comits the transaction and closes the session
 
 
 # the beginning of our API 
