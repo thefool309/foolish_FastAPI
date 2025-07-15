@@ -1,3 +1,4 @@
 *.db
 __pychache__/
 *.py[cod]
+venv/
