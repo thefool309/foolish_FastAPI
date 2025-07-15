@@ -1,2 +1,2 @@
-from db.schema import create_database
-from db.schema import drop_database
+from db.database import create_database
+from db.database import drop_database
