@@ -17,5 +17,7 @@ class Address(Base):
 # forward declaration to prevent circular imports
     student: Mapped["Student"] = relationship(back_populates="addresses")
 
+    # this function decides how this object prints 
+    # when print() is called on it
     def __repr__(self) -> str:
         return f"Address(id={self.id!r}, email_address={self.address!r})"

@@ -1,13 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, selectinload
-
+# import SessionLocal directly from database 
+# to avoid circular imports
 from db.database import SessionLocal
+
 from db.schemas import StudentCreate, StudentRead, StudentUpdate
 from models import Student, Address
 
-
 def create_student(student_data: StudentCreate) -> Student:
-
     with SessionLocal() as session, session.begin():
         # create the address objects
         address_objs = [Address(address=email) for email in student_data.addresses]
@@ -31,10 +31,7 @@ def list_students() -> list[StudentRead]:
         # eagerly load so we don't encounter errors 
         # when converting to pydantic objects
         students = session.query(Student).options(selectinload(Student.addresses)).all()
-        for student in students:
-            print(student.addresses)  # should be a list of Address objects
-            print([type(a) for a in student.addresses])  # should show all <class 'models.Address'>
-
+        # convert to pydantic object while session is still active
         return [StudentRead.model_validate(s) for s in students]
 
 def get_student(student_id: int) -> StudentRead:
@@ -44,9 +41,11 @@ def get_student(student_id: int) -> StudentRead:
         # checking for an empty value in student
         if student is None:
             raise ValueError(f"Student with id {student_id} not found")
-        
+        # convert to pydantic object while session is still active
         return StudentRead.model_validate(student)
-        
+
+# some of the code I did when learning to use the sqlalchemy
+# left it in for me to reference     
 # with engine.connect() as conn:
 #     result = conn.execute(text("SELECT 'UWU owo >^w^<'"))
 #     print(result.all())

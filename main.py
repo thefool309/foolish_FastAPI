@@ -14,11 +14,11 @@ app = FastAPI()
 
 create_database()
 
-# the beginning of our API 
+# check if the api is up
 @app.get("/")
 def read_root():
     return{"API Working": "Ready!"}
-
+# returns a student as json
 @app.get("/students", response_model=list[StudentRead], summary="List all students in database")
 def list_students_endpoint():
     try:
@@ -28,7 +28,8 @@ def list_students_endpoint():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"unexpected error: {str(e)}"
         )
-
+#takes in a student_id to find a student 
+# and return the student as json
 @app.get("/students/{student_id}", response_model=StudentRead, summary="Get a specific student by ID")
 def get_student_by_id_endpoint(student_id: int):
     try:
@@ -43,7 +44,7 @@ def get_student_by_id_endpoint(student_id: int):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"unexpected error: {str(e)}"
         )
-        
+# takes in json data with the request to insert a student into the database       
 @app.post("/students", summary="Create a new student from json data")
 def create_student_endpoint(student_data: StudentCreate):
     try:

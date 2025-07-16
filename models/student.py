@@ -18,3 +18,5 @@ class Student(Base):
     addresses: Mapped[List["Address"]] = relationship(back_populates="student",
                                                     lazy="selectin", 
                                                     cascade="all, delete-orphan")
+    def __repr__(self) -> str:
+        return f"Student(id={self.id!r}, name{self.name} gpa{self.gpa})"
