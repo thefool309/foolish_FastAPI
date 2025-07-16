@@ -8,11 +8,12 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import String, Float
 
 class Student(Base):
-    __tablename__ = "student"
+    __tablename__ = "students"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     fullname: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     gpa: Mapped[float] = mapped_column(Float)
 # forward declaration to prevent circular imports
-    address: Mapped[List["Address"]] = relationship(back_populates="student")
+    address: Mapped[List["Address"]] = relationship(back_populates="students", 
+                                                    cascade="all, delete-orphan")
