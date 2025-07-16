@@ -19,7 +19,7 @@ create_database()
 def read_root():
     return{"API Working": "Ready!"}
 
-@app.get("/students", response_model=list[StudentRead])
+@app.get("/students", response_model=list[StudentRead], summary="List all students in database")
 def list_students_endpoint():
     try:
         return list_students()
@@ -29,7 +29,7 @@ def list_students_endpoint():
             detail=f"unexpected error: {str(e)}"
         )
 
-@app.get("/students/{student_id}", response_model=StudentRead)
+@app.get("/students/{student_id}", response_model=StudentRead, summary="Get a specific student by ID")
 def get_student_by_id_endpoint(student_id: int):
     try:
         return get_student(student_id)
@@ -44,7 +44,7 @@ def get_student_by_id_endpoint(student_id: int):
             detail=f"unexpected error: {str(e)}"
         )
         
-@app.post("/students")
+@app.post("/students", summary="Create a new student from json data")
 def create_student_endpoint(student_data: StudentCreate):
     try:
         student = create_student(student_data)
