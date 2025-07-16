@@ -6,22 +6,13 @@ from sqlalchemy.exc import IntegrityError
 # from sqlalchemy.orm import Session as sesh
 # from sqlalchemy.orm import sessionmaker as seshfac
 
-from db import create_database
-
-from db import create_student, StudentCreate, StudentRead, list_students
-
-
-
+from db import create_database, create_student, StudentCreate, StudentRead, list_students, get_student
 
 engine = create_engine("sqlite:///students.db", echo=True)
 
 app = FastAPI()
 
-
 create_database()
-
-
-
 
 # the beginning of our API 
 @app.get("/")
@@ -38,6 +29,21 @@ def list_students_endpoint():
             detail=f"unexpected error: {str(e)}"
         )
 
+@app.get("/students/{student_id}", response_model=StudentRead)
+def get_student_by_id_endpoint(student_id: int):
+    try:
+        return get_student(student_id)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"unexpected error: {str(e)}"
+        )
+        
 @app.post("/students")
 def create_student_endpoint(student_data: StudentCreate):
     try:

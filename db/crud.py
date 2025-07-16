@@ -37,6 +37,15 @@ def list_students() -> list[StudentRead]:
 
         return [StudentRead.model_validate(s) for s in students]
 
+def get_student(student_id: int) -> StudentRead:
+    with SessionLocal() as session, session.begin():
+        student = session.query(Student).options(selectinload(Student.addresses)).get(student_id)
+
+        # checking for an empty value in student
+        if student is None:
+            raise ValueError(f"Student with id {student_id} not found")
+        
+        return StudentRead.model_validate(student)
         
 # with engine.connect() as conn:
 #     result = conn.execute(text("SELECT 'UWU owo >^w^<'"))
