@@ -21,7 +21,7 @@ to launch the dev server you can run
 ```bash
 fastapi dev main.py
 ```
-to launch the server you can run 
+to launch the production server you can run (untested)
 
 ```bash
 fastapi run main.py
