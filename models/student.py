@@ -15,5 +15,6 @@ class Student(Base):
     fullname: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     gpa: Mapped[float] = mapped_column(Float)
 # forward declaration to prevent circular imports
-    address: Mapped[List["Address"]] = relationship(back_populates="students", 
+    addresses: Mapped[List["Address"]] = relationship(back_populates="student",
+                                                    lazy="selectin", 
                                                     cascade="all, delete-orphan")

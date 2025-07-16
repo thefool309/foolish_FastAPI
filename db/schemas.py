@@ -1,12 +1,12 @@
 from pydantic import BaseModel, ConfigDict, EmailStr
-from typing import Optional
+from typing import Optional, List
 
 class StudentCreate(BaseModel):
     name: str
     fullname: Optional[str]
     gpa: float
 
-    address:List[EmailStr] = []
+    addresses: List[EmailStr] = []
     model_config = ConfigDict(str_max_length=50)
 
 class StudentUpdate(BaseModel):
@@ -14,12 +14,13 @@ class StudentUpdate(BaseModel):
     fullname: Optional[str]
     gpa: Optional[float] 
 
-    address: Optional[List[EmailStr]]
+    addresses: Optional[List[EmailStr]]
     model_config = ConfigDict(str_max_length=50)
 
 class AddressRead(BaseModel):
     id: int
-    email: EmailStr
+    address: EmailStr
+    student_id: int 
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -29,5 +30,5 @@ class StudentRead(BaseModel):
     fullname: Optional[str]
     gpa: float
 
-    address: List[EmailStr]
+    addresses: List[AddressRead]
     model_config = ConfigDict(from_attributes=True)

@@ -1,54 +1,56 @@
-from fastapi import FastAPI
 
+from fastapi import FastAPI, HTTPException, status
 from sqlalchemy import create_engine
-from sqlalchemy import text
-from sqlalchemy.orm import Session as sesh
-from sqlalchemy.orm import sessionmaker as seshfac
+from sqlalchemy.exc import IntegrityError
+# from sqlalchemy import text
+# from sqlalchemy.orm import Session as sesh
+# from sqlalchemy.orm import sessionmaker as seshfac
 
 from db import create_database
+
+from db import create_student, StudentCreate, StudentRead, list_students
+
+
+
 
 engine = create_engine("sqlite:///students.db", echo=True)
 
 app = FastAPI()
 
-# with engine.connect() as conn:
-#     result = conn.execute(text("SELECT 'UWU owo >^w^<'"))
-#     print(result.all())
-#     conn.execute(text("CREATE TABLE IF NOT EXISTS student(id INTEGER PRIMARY KEY AUTOINCREMENT, age INTEGER NOT NULL, gpa FLOAT NOT NULL)"))
-#     conn.commit()
-
-# stmt = text("CREATE TABLE IF NOT EXISTS student(id INTEGER PRIMARY KEY AUTOINCREMENT, age INTEGER NOT NULL, gpa FLOAT NOT NULL)")
 
 create_database()
 
-# using the factory method vs the Session method 
 
-# you can use the context manager interface 
-# or frame out the try block
-
-# this is one way to work with a session 
-# but this would be considered the "longform"
-# this is what's happening behind the scenes with the below
-# with sesh(engine) as session:
-#     try:
-#         session.execute(stmt)
-#     except:
-#         session.rollback()
-#         raise
-#     else:
-#         session.commit()
-
-# short form of the above also making use of the sessionmaker
-# factory method
-
-# Session = seshfac(engine)
-
-# with Session.begin() as session:
-#     session.execute(stmt)
-# # comits the transaction and closes the session
 
 
 # the beginning of our API 
 @app.get("/")
 def read_root():
     return{"API Working": "Ready!"}
+
+@app.get("/students", response_model=list[StudentRead])
+def list_students_endpoint():
+    try:
+        return list_students()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"unexpected error: {str(e)}"
+        )
+
+@app.post("/students")
+def create_student_endpoint(student_data: StudentCreate):
+    try:
+        student = create_student(student_data)
+        return student
+    except IntegrityError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Database constraint violated (e.g., duplicate or missing foreign key)"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"unexpected error: {str(e)}"
+        )
+

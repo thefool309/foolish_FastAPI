@@ -5,14 +5,13 @@ from typing import Optional
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-from sqlalchemy import String, Float
+from sqlalchemy import String, Float, ForeignKey
 
 class Address(Base):
     __tablename__ = "addresses"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     address: Mapped[str] = mapped_column(String(40))
-
     student_id: Mapped[int] = mapped_column(ForeignKey("students.id"))
 
 # forward declaration to prevent circular imports
