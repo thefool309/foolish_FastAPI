@@ -24,3 +24,10 @@ class AddressRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class StudentRead(BaseModel):
+    id: int
+    name: str
+    fullname: Optional[str]
+    gpa: float
+
+    address: List[EmailStr]
+    model_config = ConfigDict(from_attributes=True)
